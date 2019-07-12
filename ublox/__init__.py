@@ -7,8 +7,9 @@ Released under GNU GPL version 3 or later
 '''
 
 import struct
-from datetime import datetime
-import time, os
+# from datetime import datetime
+import time
+import os
 
 # protocol constants
 PREAMBLE1 = 0xb5
@@ -30,44 +31,44 @@ MSG_ACK_NACK = 0x00
 MSG_ACK_ACK = 0x01
 
 # NAV messages
-MSG_NAV_POSECEF   = 0x1
-MSG_NAV_POSLLH    = 0x2
-MSG_NAV_STATUS    = 0x3
-MSG_NAV_DOP       = 0x4
-MSG_NAV_SOL       = 0x6
-MSG_NAV_POSUTM    = 0x8
-MSG_NAV_VELNED    = 0x12
-MSG_NAV_VELECEF   = 0x11
-MSG_NAV_TIMEGPS   = 0x20
-MSG_NAV_TIMEUTC   = 0x21
-MSG_NAV_CLOCK     = 0x22
-MSG_NAV_SVINFO    = 0x30
+MSG_NAV_POSECEF = 0x1
+MSG_NAV_POSLLH = 0x2
+MSG_NAV_STATUS = 0x3
+MSG_NAV_DOP = 0x4
+MSG_NAV_SOL = 0x6
+MSG_NAV_POSUTM = 0x8
+MSG_NAV_VELNED = 0x12
+MSG_NAV_VELECEF = 0x11
+MSG_NAV_TIMEGPS = 0x20
+MSG_NAV_TIMEUTC = 0x21
+MSG_NAV_CLOCK = 0x22
+MSG_NAV_SVINFO = 0x30
 MSG_NAV_AOPSTATUS = 0x60
-MSG_NAV_DGPS      = 0x31
-MSG_NAV_DOP       = 0x04
+MSG_NAV_DGPS = 0x31
+MSG_NAV_DOP = 0x04
 MSG_NAV_EKFSTATUS = 0x40
-MSG_NAV_SBAS      = 0x32
-MSG_NAV_SOL       = 0x06
+MSG_NAV_SBAS = 0x32
+MSG_NAV_SOL = 0x06
 
 # RXM messages
-MSG_RXM_RAW    = 0x10
-MSG_RXM_SFRB   = 0x11
-MSG_RXM_SVSI   = 0x20
-MSG_RXM_EPH    = 0x31
-MSG_RXM_ALM    = 0x30
-MSG_RXM_PMREQ  = 0x41
+MSG_RXM_RAW = 0x10
+MSG_RXM_SFRB = 0x11
+MSG_RXM_SVSI = 0x20
+MSG_RXM_EPH = 0x31
+MSG_RXM_ALM = 0x30
+MSG_RXM_PMREQ = 0x41
 
 # AID messages
-MSG_AID_ALM    = 0x30
-MSG_AID_EPH    = 0x31
+MSG_AID_ALM = 0x30
+MSG_AID_EPH = 0x31
 MSG_AID_ALPSRV = 0x32
-MSG_AID_AOP    = 0x33
-MSG_AID_DATA   = 0x10
-MSG_AID_ALP    = 0x50
-MSG_AID_DATA   = 0x10
-MSG_AID_HUI    = 0x02
-MSG_AID_INI    = 0x01
-MSG_AID_REQ    = 0x00
+MSG_AID_AOP = 0x33
+MSG_AID_DATA = 0x10
+MSG_AID_ALP = 0x50
+MSG_AID_DATA = 0x10
+MSG_AID_HUI = 0x02
+MSG_AID_INI = 0x01
+MSG_AID_REQ = 0x00
 
 # CFG messages
 MSG_CFG_PRT = 0x00
@@ -100,61 +101,61 @@ MSG_CFG_TP = 0x07
 MSG_CFG_GNSS = 0x3E
 
 # ESF messages
-MSG_ESF_MEAS   = 0x02
+MSG_ESF_MEAS = 0x02
 MSG_ESF_STATUS = 0x10
 
 # INF messages
-MSG_INF_DEBUG  = 0x04
-MSG_INF_ERROR  = 0x00
+MSG_INF_DEBUG = 0x04
+MSG_INF_ERROR = 0x00
 MSG_INF_NOTICE = 0x02
-MSG_INF_TEST   = 0x03
-MSG_INF_WARNING= 0x01
+MSG_INF_TEST = 0x03
+MSG_INF_WARNING = 0x01
 
 # MON messages
-MSG_MON_SCHD  = 0x01
-MSG_MON_HW    = 0x09
-MSG_MON_HW2   = 0x0B
-MSG_MON_IO    = 0x02
+MSG_MON_SCHD = 0x01
+MSG_MON_HW = 0x09
+MSG_MON_HW2 = 0x0B
+MSG_MON_IO = 0x02
 MSG_MON_MSGPP = 0x06
 MSG_MON_RXBUF = 0x07
-MSG_MON_RXR   = 0x21
+MSG_MON_RXR = 0x21
 MSG_MON_TXBUF = 0x08
-MSG_MON_VER   = 0x04
+MSG_MON_VER = 0x04
 
 # TIM messages
-MSG_TIM_TP   = 0x01
-MSG_TIM_TM2  = 0x03
+MSG_TIM_TP = 0x01
+MSG_TIM_TM2 = 0x03
 MSG_TIM_SVIN = 0x04
 MSG_TIM_VRFY = 0x06
 
 # port IDs
-PORT_DDC    =0
-PORT_SERIAL1=1
-PORT_SERIAL2=2
-PORT_USB    =3
-PORT_SPI    =4
+PORT_DDC = 0
+PORT_SERIAL1 = 1
+PORT_SERIAL2 = 2
+PORT_USB = 3
+PORT_SPI = 4
 
 # dynamic models
-DYNAMIC_MODEL_PORTABLE   = 0
+DYNAMIC_MODEL_PORTABLE = 0
 DYNAMIC_MODEL_STATIONARY = 2
 DYNAMIC_MODEL_PEDESTRIAN = 3
 DYNAMIC_MODEL_AUTOMOTIVE = 4
-DYNAMIC_MODEL_SEA        = 5
+DYNAMIC_MODEL_SEA = 5
 DYNAMIC_MODEL_AIRBORNE1G = 6
 DYNAMIC_MODEL_AIRBORNE2G = 7
 DYNAMIC_MODEL_AIRBORNE4G = 8
 
-#reset items
-RESET_HOT  = 0
+# reset items
+RESET_HOT = 0
 RESET_WARM = 1
 RESET_COLD = 0xFFFF
 
-RESET_HW            = 0
-RESET_SW            = 1
-RESET_SW_GPS        = 2
-RESET_HW_GRACEFUL   = 4
-RESET_GPS_STOP      = 8
-RESET_GPS_START     = 9
+RESET_HW = 0
+RESET_SW = 1
+RESET_SW_GPS = 2
+RESET_HW_GRACEFUL = 4
+RESET_GPS_STOP = 8
+RESET_GPS_START = 9
 
 
 class UBloxError(Exception):
@@ -176,7 +177,7 @@ class UBloxAttrDict(dict):
             raise AttributeError(name)
 
     def __setattr__(self, name, value):
-        if self.__dict__.has_key(name):
+        if name in self.__dict__:
             # allow set on normal attributes
             dict.__setattr__(self, name, value)
         else:
@@ -284,13 +285,14 @@ class UBloxDescriptor:
         fields = self.fields[:]
         for f in fields:
             (fieldname, alen) = ArrayParse(f)
-            if not fieldname in msg._fields:
+            if fieldname not in msg._fields:
                 break
             if alen == -1:
                 f1.append(msg._fields[fieldname])
             else:
                 for a in range(alen):
-                    f1.append(msg._fields[fieldname][a])                    
+                    f1.append(msg._fields[fieldname][a])
+
         try:
             # try full length message
             fmt = self.msg_format.replace(',', '')
@@ -312,7 +314,7 @@ class UBloxDescriptor:
             f2 = []
             for f in self.fields2:
                 f2.append(r[f])
-            msg._buf += struct.pack(self.format2, *tuple(f2))            
+            msg._buf += struct.pack(self.format2, *tuple(f2))
         msg._buf += struct.pack('<BB', *msg.checksum(data=msg._buf[2:]))
 
     def format(self, msg):
@@ -343,7 +345,7 @@ class UBloxDescriptor:
                 ret += '%s=%s, ' % (f, v)
             ret = ret[:-2] + ' ], '
         return ret[:-2]
-        
+
 
 # list of supported message types.
 msg_types = {
@@ -433,7 +435,7 @@ msg_types = {
             'numSV', 'reserved2'
         ]
     ),
-    (CLASS_NAV, MSG_NAV_POSUTM) : UBloxDescriptor(
+    (CLASS_NAV, MSG_NAV_POSUTM): UBloxDescriptor(
         'NAV_POSUTM', '<Iiiibb', [
             'iTOW', 'East', 'North', 'Alt', 'Zone', 'Hem'
         ]
@@ -674,7 +676,7 @@ class UBloxMessage:
         if not self.valid():
             raise UBloxError('INVALID MESSAGE')
         type = self.msg_type()
-        if not type in msg_types:
+        if type not in msg_types:
             raise UBloxError(
                 'Unknown message %s length=%u' % (
                     str(type), len(self._buf)
@@ -687,7 +689,7 @@ class UBloxMessage:
         pack a message
         '''
         if not self.valid():
-            raise UbloxError('INVALID MESSAGE')
+            raise UBloxError('INVALID MESSAGE')
         type = self.msg_type()
         if type not in msg_types:
             raise UBloxError('Unknown message %s' % str(type))
@@ -698,7 +700,7 @@ class UBloxMessage:
         return the short string name for a message
         '''
         if not self.valid():
-            raise UbloxError('INVALID MESSAGE')
+            raise UBloxError('INVALID MESSAGE')
         type = self.msg_type()
         if type not in msg_types:
             raise UBloxError(
@@ -779,7 +781,7 @@ class UBloxMessage:
         '''
         if data is None:
             data = self._buf[2:-2]
-        cs = 0
+        # cs = 0  # assigned but never used
         ck_a = 0
         ck_b = 0
         for i in data:
@@ -792,7 +794,7 @@ class UBloxMessage:
         check if the checksum is OK
         '''
         (ck_a, ck_b) = self.checksum()
-        d = self._buf[2:-2]
+        # d = self._buf[2:-2]  # assigned but never used
         (ck_a2, ck_b2) = struct.unpack('<BB', self._buf[-2:])
         return ck_a == ck_a2 and ck_b == ck_b2
 
@@ -831,7 +833,7 @@ class UBlox:
             self.dev = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.dev.connect(destination_addr)
             self.dev.setblocking(1)
-            self.dev.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)            
+            self.dev.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
             self.use_sendrecv = True
         elif os.path.isfile(self.serial_device):
             self.read_only = True
@@ -846,6 +848,7 @@ class UBlox:
                 xonxoff=False,
                 timeout=timeout
             )
+
         self.logfile = None
         self.log = None
         self.preferred_dynamic_model = None
@@ -996,7 +999,7 @@ class UBlox:
             msg.unpack()
             if msg.usePPP != self.preferred_usePPP:
                 msg.usePPP = self.preferred_usePPP
-                msg.mask = 1<<13
+                msg.mask = 1 << 13
                 msg.pack()
                 self.send(msg)
                 self.configure_poll(CLASS_CFG, MSG_CFG_NAVX5)
@@ -1045,7 +1048,7 @@ class UBlox:
             self.debug(1, "invalid send")
             return
         if not self.read_only:
-            self.write(msg._buf)        
+            self.write(msg._buf)
 
     def send_message(self, msg_class, msg_id, payload):
         '''
