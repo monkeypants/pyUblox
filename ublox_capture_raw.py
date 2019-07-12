@@ -1,21 +1,34 @@
 #!/usr/bin/env python
-
-import ublox, sys, time, struct
-import ephemeris
-
 from optparse import OptionParser
+import sys
+import time
+import struct
+import ublox
+from ublox import ephemeris
 
 parser = OptionParser("ublox_capture_raw.py [options]")
 parser.add_option("--port", help="serial port", default='/dev/ttyACM0')
 parser.add_option("--baudrate", type='int',
                   help="serial baud rate", default=115200)
 parser.add_option("--log", help="log file", default=None)
-parser.add_option("--append", action='store_true', default=False, help='append to log file')
-parser.add_option("--reopen", action='store_true', default=False, help='re-open on failure')
-parser.add_option("--show", action='store_true', default=False, help='show messages while capturing')
-parser.add_option("--dynModel", type='int', default=None, help='set dynamic navigation model')
-parser.add_option("--usePPP", action='store_true', default=False, help='enable precise point positioning')
-parser.add_option("--dots", action='store_true', default=False, help='print a dot on each message')
+parser.add_option(
+    "--append", action='store_true', default=False,
+    help='append to log file')
+parser.add_option(
+    "--reopen", action='store_true', default=False,
+    help='re-open on failure')
+parser.add_option(
+    "--show", action='store_true', default=False,
+    help='show messages while capturing')
+parser.add_option(
+    "--dynModel", type='int', default=None,
+    help='set dynamic navigation model')
+parser.add_option(
+    "--usePPP", action='store_true', default=False,
+    help='enable precise point positioning')
+parser.add_option(
+    "--dots", action='store_true', default=False,
+    help='print a dot on each message')
 
 
 (opts, args) = parser.parse_args()
@@ -47,6 +60,7 @@ dev.configure_message_rate(ublox.CLASS_RXM, ublox.MSG_RXM_SFRB, 1)
 svid_seen = {}
 svid_ephemeris = {}
 
+
 def handle_rxm_raw(msg):
     '''handle a RXM_RAW message'''
     global svid_seen, svid_ephemeris
@@ -54,11 +68,14 @@ def handle_rxm_raw(msg):
     for i in range(msg.numSV):
         sv = msg.recs[i].sv
         tnow = time.time()
-        if not sv in svid_seen or tnow > svid_seen[sv]+30:
-            if sv in svid_ephemeris and svid_ephemeris[sv].timereceived+1800 < tnow:
+        if sv not in svid_seen or tnow > svid_seen[sv]+30:
+            if sv in svid_ephemeris and svid_ephemeris[sv].timereceived+1800 < tnow:  # NOQA
                 continue
-            dev.configure_poll(ublox.CLASS_AID, ublox.MSG_AID_EPH, struct.pack('<B', sv))
+            dev.configure_poll(
+                ublox.CLASS_AID, ublox.MSG_AID_EPH, struct.pack('<B', sv)
+            )
             svid_seen[sv] = tnow
+
 
 while True:
     msg = dev.receive_message()

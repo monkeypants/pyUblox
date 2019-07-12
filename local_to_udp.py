@@ -3,8 +3,15 @@
 Locally-generated DGPS corrections, publish as UDP datagrams
 '''
 
-import ublox, sys, time, socket, struct
-import ephemeris, util, positionEstimate, satelliteData
+import sys
+import time
+import socket
+import struct
+import ublox
+# from ublox import ephemeris
+import util
+import positionEstimate
+import satelliteData
 import RTCMv2
 
 from optparse import OptionParser

@@ -3,8 +3,14 @@
 two receiver DGPS test code
 '''
 
-import ublox, sys, time, struct
-import ephemeris, util, positionEstimate, satelliteData
+import ublox
+import sys
+import time
+import struct
+# from ublox import ephemeris
+import util
+import positionEstimate
+import satelliteData
 import RTCMv2
 
 from optparse import OptionParser
