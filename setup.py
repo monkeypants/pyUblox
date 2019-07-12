@@ -4,5 +4,6 @@ setup(
     name='pyUblox',
     version='0.1dev',
     packages=['ublox'],
-    licence="GPLv3 or later"
+    licence="GPLv3 or later",
+    install_requires=['pySerial', ]
 )
