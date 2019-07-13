@@ -927,10 +927,12 @@ class UBlox:
         '''
         write some bytes
         '''
+        # TODO: conditionally on type
+        bbuf = bytes(buf, 'utf-8')
         if not self.read_only:
             if self.use_sendrecv:
-                return self.dev.send(buf)
-            return self.dev.write(buf)
+                return self.dev.send(bbuf)
+            return self.dev.write(bbuf)
 
     def read(self, n):
         '''
