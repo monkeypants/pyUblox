@@ -297,7 +297,7 @@ class UBloxDescriptor:
             # try full length message
             fmt = self.msg_format.replace(',', '')
             msg._buf = struct.pack(fmt, *tuple(f1))
-        except Exception as e:
+        except Exception:
             # try without optional part
             fmt = self.msg_format.split(',')[0]
             msg._buf = struct.pack(fmt, *tuple(f1))
@@ -617,7 +617,7 @@ class UBloxMessage:
     UBlox message class - holds a UBX binary message
     '''
     def __init__(self):
-        self._buf = ""
+        self._buf = b''
         self._fields = {}
         self._recs = []
         self._unpacked = False
@@ -714,13 +714,15 @@ class UBloxMessage:
         '''
         return the message class
         '''
-        return ord(self._buf[2])
+        # return ord(self._buf[2])
+        return self._buf[2]
 
     def msg_id(self):
         '''
         return the message id within the class
         '''
-        return ord(self._buf[3])
+        # return ord(self._buf[3])
+        return self._buf[3]
 
     def msg_type(self):
         '''
@@ -739,11 +741,14 @@ class UBloxMessage:
         '''
         check if the message is valid so far
         '''
-        if len(self._buf) > 0 and ord(self._buf[0]) != PREAMBLE1:
+        # if len(self._buf) > 0 and ord(self._buf[0]) != PREAMBLE1:
+        if len(self._buf) > 0 and self._buf[0] != PREAMBLE1:
             return False
-        if len(self._buf) > 1 and ord(self._buf[1]) != PREAMBLE2:
+        # if len(self._buf) > 1 and ord(self._buf[1]) != PREAMBLE2:
+        if len(self._buf) > 1 and self._buf[1] != PREAMBLE2:
             self.debug(1, "bad pre2")
             return False
+
         if self.needed_bytes() == 0 and not self.valid():
             if len(self._buf) > 8:
                 self.debug(
@@ -762,18 +767,22 @@ class UBloxMessage:
             return False
         return True
 
-    def add(self, bytes):
+    def add(self, data):
         '''
         add some bytes to a message
         '''
-        self._buf += bytes
+        if not isinstance(data, type(b'')):
+            err_msg = "add() passed %s, which is not bytes (%s)"
+            raise Exception(err_msg % (data, type(data)))  # DEBUG
+
+        self._buf += data
         while not self.valid_so_far() and len(self._buf) > 0:
             '''
             handle corrupted streams
             '''
             self._buf = self._buf[1:]
         if self.needed_bytes() < 0:
-            self._buf = ""
+            self._buf = b''
 
     def checksum(self, data=None):
         '''
@@ -785,7 +794,7 @@ class UBloxMessage:
         ck_a = 0
         ck_b = 0
         for i in data:
-            ck_a = (ck_a + ord(i)) & 0xFF
+            ck_a = (ck_a + i) & 0xFF
             ck_b = (ck_b + ck_a) & 0xFF
         return (ck_a, ck_b)
 
@@ -920,19 +929,18 @@ class UBlox:
         d = msg[1:]
         cs = 0
         for i in d:
-            cs ^= ord(i)
+            #  cs ^= ord(i)
+            cs ^= i
         return cs
 
     def write(self, buf):
         '''
         write some bytes
         '''
-        # TODO: conditionally on type
-        bbuf = bytes(buf, 'utf-8')
         if not self.read_only:
             if self.use_sendrecv:
-                return self.dev.send(bbuf)
-            return self.dev.write(bbuf)
+                return self.dev.send(buf)
+            return self.dev.write(buf)
 
     def read(self, n):
         '''
@@ -942,13 +950,13 @@ class UBlox:
             import socket
             try:
                 return self.dev.recv(n)
-            except socket.error as e:
-                return ''
+            except socket.error:
+                return b''
         return self.dev.read(n)
 
     def send_nmea(self, msg):
         if not self.read_only:
-            s = msg + "*%02X" % self.nmea_checksum(msg)
+            s = msg + bytes("*%02X" % self.nmea_checksum(msg), 'utf-8')
             self.write(s)
 
     def set_binary(self):
@@ -957,12 +965,12 @@ class UBlox:
         '''
         if not self.read_only:
             print("try set binary at %u" % self.baudrate)
-            self.send_nmea("$PUBX,41,0,0007,0001,%u,0" % self.baudrate)
-            self.send_nmea("$PUBX,41,1,0007,0001,%u,0" % self.baudrate)
-            self.send_nmea("$PUBX,41,2,0007,0001,%u,0" % self.baudrate)
-            self.send_nmea("$PUBX,41,3,0007,0001,%u,0" % self.baudrate)
-            self.send_nmea("$PUBX,41,4,0007,0001,%u,0" % self.baudrate)
-            self.send_nmea("$PUBX,41,5,0007,0001,%u,0" % self.baudrate)
+            self.send_nmea(b'$PUBX,41,0,0007,0001,%u,0' % self.baudrate)
+            self.send_nmea(b'$PUBX,41,1,0007,0001,%u,0' % self.baudrate)
+            self.send_nmea(b'$PUBX,41,2,0007,0001,%u,0' % self.baudrate)
+            self.send_nmea(b'$PUBX,41,3,0007,0001,%u,0' % self.baudrate)
+            self.send_nmea(b'$PUBX,41,4,0007,0001,%u,0' % self.baudrate)
+            self.send_nmea(b'$PUBX,41,5,0007,0001,%u,0' % self.baudrate)
 
     def seek_percent(self, pct):
         '''
@@ -1103,7 +1111,7 @@ class UBlox:
             '<IIIB', clearMask, saveMask, loadMask, deviceMask)
         self.send_message(CLASS_CFG, MSG_CFG_CFG, payload)
 
-    def configure_poll(self, msg_class, msg_id, payload=''):
+    def configure_poll(self, msg_class, msg_id, payload=b''):
         '''
         poll a configuration message
         '''
